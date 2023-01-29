@@ -3,6 +3,7 @@ package com.stepanenko.reddittool;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
@@ -59,6 +60,12 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder>{
             Glide.with(activity).load(thumbnail)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(holder.thumbnail);
+
+            holder.thumbnail.setOnClickListener(view -> {
+                Intent i = new Intent(view.getContext(), FullSizeActivity.class);
+                i.putExtra("urlImage", post.getThumbnail());
+                view.getContext().startActivity(i);
+            });
         } else {
             holder.thumbnail.setVisibility(View.GONE);
         }

@@ -7,4 +7,6 @@
     <string name="default_comments_text">2000 comments</string>
     <string name="default_time_text">10 minutes ago</string>
     <string name="author">Author</string>
+    <string name="big_size_image">Big Size Image</string>
+    <string name="big_image_description">Big Image</string>
 </resources>
