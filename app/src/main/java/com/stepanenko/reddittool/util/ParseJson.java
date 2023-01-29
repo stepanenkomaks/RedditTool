@@ -10,32 +10,42 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ParseJson {
-    public static RedditPost parseJson(String response) throws JSONException{
+    public static List<RedditPost> parseJson(JSONObject response) throws JSONException{
         if (response != null && !response.equals("")) {
+            List<RedditPost> posts = new ArrayList<>();
+
             //Go to JSONObject with required data
-            String data = new JSONObject(response).getString("data");
-            String children = new JSONObject(data).getString("children");
-            String childrenData = new JSONArray(children).getJSONObject(0)
-                    .getString("data");
-            JSONObject childrenDataJSON = new JSONObject(childrenData);
+            JSONArray childrenDataArr = response.getJSONObject("data")
+                    .optJSONArray("children");
 
-            //Get data from JSONObject
-            String username = childrenDataJSON.getString("subreddit");
-            String thumbnailUrl =  childrenDataJSON.getString("thumbnail");
-            Long createdAt = childrenDataJSON.getLong("created");
-            int numComments = childrenDataJSON.getInt("num_comments");
-            String title = childrenDataJSON.getString("title");
+            for (int i = 0; i < childrenDataArr.length(); i++) {
+                String childrenData = childrenDataArr.getJSONObject(i)
+                        .getString("data");
+                JSONObject childrenDataJSON = new JSONObject(childrenData);
 
-            //Set data to our model
-            RedditPost redditPost = new RedditPost();
-            redditPost.setUsername(username);
-            redditPost.setThumbnail(thumbnailUrl);
-            redditPost.setTitle(title);
-            redditPost.setComments(numComments);
-            redditPost.setCreatedAt(convert(createdAt));
+                //Get data from JSONObject
+                String username = childrenDataJSON.getString("subreddit");
+                String thumbnailUrl =  childrenDataJSON.getString("thumbnail");
+                Long createdAt = childrenDataJSON.getLong("created");
+                int numComments = childrenDataJSON.getInt("num_comments");
+                String title = childrenDataJSON.getString("title");
 
-            return redditPost;
+                //Set data to our model
+                RedditPost redditPost = new RedditPost();
+                redditPost.setAuthor(username);
+                redditPost.setThumbnail(thumbnailUrl);
+                redditPost.setTitle(title);
+                redditPost.setComments(numComments);
+                redditPost.setCreatedAt(convert(createdAt));
+
+                posts.add(redditPost);
+            }
+
+            return posts;
         } else {
             throw new NoSuchPropertyException("There is no response");
         }

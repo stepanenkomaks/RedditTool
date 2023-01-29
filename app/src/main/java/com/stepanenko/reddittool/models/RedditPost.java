@@ -1,7 +1,7 @@
 package com.stepanenko.reddittool.models;
 
 public class RedditPost {
-    private String username;
+    private String author;
 
     private String thumbnail;
 
@@ -11,12 +11,12 @@ public class RedditPost {
 
     private int comments;
 
-    public String getUsername() {
-        return username;
+    public String getAuthor() {
+        return author;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setAuthor(String author) {
+        this.author = author;
     }
 
     public String getThumbnail() {
@@ -54,7 +54,7 @@ public class RedditPost {
     @Override
     public String toString() {
         return "Post{" +
-                "username='" + username + '\'' +
+                "username='" + author + '\'' +
                 ", thumbnail='" + thumbnail + '\'' +
                 ", createdAt='" + createdAt + '\'' +
                 ", title='" + title + '\'' +

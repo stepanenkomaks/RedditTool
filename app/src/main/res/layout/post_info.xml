@@ -28,7 +28,7 @@
             android:layout_marginStart="10dp"
             android:layout_marginTop="5dp"
             android:layout_toEndOf="@id/thumbnail"
-            tools:srcCompat="@tools:sample/avatars"
+            android:src="@drawable/user_avatar"
             android:contentDescription="@string/author_avatar" />
 
         <TextView

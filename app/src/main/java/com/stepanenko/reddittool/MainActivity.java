@@ -4,25 +4,24 @@ import static com.stepanenko.reddittool.services.GetTopPostsService.getResponse;
 import static com.stepanenko.reddittool.util.ParseJson.parseJson;
 
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.util.NoSuchPropertyException;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.stepanenko.reddittool.models.RedditPost;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.Objects;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -30,9 +29,7 @@ import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
 
-    private final int DEFAULT_LIMIT = 1;
-
-//    private TextView result;
+    private final int DEFAULT_LIMIT = 10;
 
     private TextView errorMessage;
 
@@ -40,27 +37,28 @@ public class MainActivity extends AppCompatActivity {
 
     private List<RedditPost> posts;
 
+    private RecyclerView recyclerView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//        result = findViewById(R.id.show);
         errorMessage = findViewById(R.id.error_message);
         loadingIndicator = findViewById(R.id.loading_indicator);
+        recyclerView = findViewById(R.id.list_of_posts);
         posts = new ArrayList<>();
 
-        getData();
-    }
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setHasFixedSize(true);
 
-    private void showResultTextView() {
-//        result.setVisibility(View.VISIBLE);
-        errorMessage.setVisibility(View.INVISIBLE);
+        this.getData();
+       // this.showData();
     }
 
     private void showErrorTextView() {
         errorMessage.setVisibility(View.VISIBLE);
-//        result.setVisibility(View.INVISIBLE);
     }
 
     private void getData() {
@@ -68,27 +66,37 @@ public class MainActivity extends AppCompatActivity {
         Call call = getResponse(DEFAULT_LIMIT);
         call.enqueue(new Callback() {
             @Override
-            public void onFailure(@NonNull Call call, IOException e) {
-                showErrorTextView();
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                runOnUiThread(() -> {
+                    showErrorTextView();
+                });
             }
 
             @Override
-            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+            public void onResponse(@NonNull Call call, @NonNull Response response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    loadingIndicator.setVisibility(View.INVISIBLE);
-                    try {
-                        RedditPost redditPost = parseJson(response.body().string());
-                        runOnUiThread(() -> {
-                            showResultTextView();
-//                            result.setText(redditPost.toString());
-                            posts.add(redditPost);
-                        });
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+                    runOnUiThread(() -> {
+                        try {
+                            JSONObject jsonObject = new JSONObject(response.body().string());
+                            posts = parseJson(jsonObject);
+                            MainAdapter adapter = new MainAdapter(posts, MainActivity.this);
+                            recyclerView.setAdapter(adapter);
+                        } catch (JSONException | IOException e) {
+                            e.printStackTrace();
+                        }
+                    });
+
                 }
             }
         });
+
+        loadingIndicator.setVisibility(View.INVISIBLE);
     }
+
+//    private void showData() {
+//        MainAdapter adapter = new MainAdapter(posts);
+//        recyclerView.setAdapter(adapter);
+//        loadingIndicator.setVisibility(View.INVISIBLE);
+//    }
 
 }
