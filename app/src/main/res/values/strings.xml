@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">RedditTool</string>
+    <string name="error_message">Error( Try again!</string>
+    <string name="image1_description">thumbnail</string>
+    <string name="author_avatar">Author avatar</string>
+    <string name="default_title_text">Default text for the title</string>
+    <string name="default_comments_text">2000 comments</string>
+    <string name="default_time_text">10 minutes ago</string>
+    <string name="author">Author</string>
+</resources>
