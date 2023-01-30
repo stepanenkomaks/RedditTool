@@ -6,7 +6,7 @@ import static com.stepanenko.reddittool.util.ParseJson.parseJson;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ProgressBar;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,7 +21,6 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -30,9 +29,6 @@ import okhttp3.Response;
 public class MainActivity extends AppCompatActivity {
 
     private final int DEFAULT_LIMIT = 10;
-
-    private TextView errorMessage;
-
     private ProgressBar loadingIndicator;
 
     private List<RedditPost> posts;
@@ -44,7 +40,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        errorMessage = findViewById(R.id.error_message);
         loadingIndicator = findViewById(R.id.loading_indicator);
         recyclerView = findViewById(R.id.list_of_posts);
         posts = new ArrayList<>();
@@ -54,11 +49,10 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
 
         this.getData();
-       // this.showData();
     }
 
-    private void showErrorTextView() {
-        errorMessage.setVisibility(View.VISIBLE);
+    private void showErrorToast() {
+        Toast.makeText(this, "Error( Try again!", Toast.LENGTH_LONG).show();
     }
 
     private void getData() {
@@ -67,9 +61,7 @@ public class MainActivity extends AppCompatActivity {
         call.enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                runOnUiThread(() -> {
-                    showErrorTextView();
-                });
+                runOnUiThread(() -> showErrorToast());
             }
 
             @Override
@@ -85,18 +77,12 @@ public class MainActivity extends AppCompatActivity {
                             e.printStackTrace();
                         }
                     });
-
+                } else {
+                    runOnUiThread(() -> showErrorToast());
                 }
             }
         });
 
         loadingIndicator.setVisibility(View.INVISIBLE);
     }
-
-//    private void showData() {
-//        MainAdapter adapter = new MainAdapter(posts);
-//        recyclerView.setAdapter(adapter);
-//        loadingIndicator.setVisibility(View.INVISIBLE);
-//    }
-
 }

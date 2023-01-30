@@ -63,7 +63,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder>{
 
             holder.thumbnail.setOnClickListener(view -> {
                 Intent i = new Intent(view.getContext(), FullSizeActivity.class);
-                i.putExtra("urlImage", post.getThumbnail());
+                i.putExtra("url", post.getThumbnail());
                 view.getContext().startActivity(i);
             });
         } else {

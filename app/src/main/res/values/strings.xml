@@ -9,4 +9,5 @@
     <string name="author">Author</string>
     <string name="big_size_image">Big Size Image</string>
     <string name="big_image_description">Big Image</string>
+    <string name="button">Button</string>
 </resources>
