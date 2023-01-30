@@ -61,13 +61,13 @@ public class MainActivity extends AppCompatActivity {
         nestedScrollView.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener)
                 (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
                     if (scrollY == v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight()) {
-                        afterParameter = posts.get(posts.size() - 1).getName();
-                        beforeParameter = "";
+                        this.afterParameter = posts.get(posts.size() - 1).getName();
+                        this.beforeParameter = "";
                         loadingIndicator.setVisibility(View.VISIBLE);
                         getData(afterParameter, beforeParameter);
                     } else if (scrollY == 0) {
-                        afterParameter = "";
-                        beforeParameter = posts.get(0).getName();
+                        this.afterParameter = "";
+                        this.beforeParameter = posts.get(0).getName();
                         loadingIndicator.setVisibility(View.VISIBLE);
                         getData(afterParameter, beforeParameter);
                     }
