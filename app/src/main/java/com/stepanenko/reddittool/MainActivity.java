@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -31,6 +32,8 @@ public class MainActivity extends AppCompatActivity {
     private final int DEFAULT_LIMIT = 10;
     private ProgressBar loadingIndicator;
 
+    private NestedScrollView nestedScrollView;
+
     private List<RedditPost> posts;
 
     private RecyclerView recyclerView;
@@ -40,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        nestedScrollView = findViewById(R.id.scroll_view);
         loadingIndicator = findViewById(R.id.loading_indicator);
         recyclerView = findViewById(R.id.list_of_posts);
         posts = new ArrayList<>();
@@ -49,6 +53,14 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
 
         this.getData();
+
+        nestedScrollView.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener)
+                (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+                    if (scrollY == v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight()) {
+                        loadingIndicator.setVisibility(View.VISIBLE);
+                        getData();
+                    }
+                });
     }
 
     private void showErrorToast() {
