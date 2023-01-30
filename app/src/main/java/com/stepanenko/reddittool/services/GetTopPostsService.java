@@ -12,12 +12,13 @@ import okhttp3.Response;
 public class GetTopPostsService {
     private static final OkHttpClient client = new OkHttpClient();
 
-    public static Call getResponse(int limit){
+    public static Call getResponse(int limit, String after){
         HttpUrl httpUrl = new HttpUrl.Builder()
                 .scheme("https")
                 .host("www.reddit.com")
                 .addPathSegment("top.json")
                 .addQueryParameter("limit", String.valueOf(limit))
+                .addQueryParameter("after", after)
                 .build();
 
         Request request = new Request.Builder()

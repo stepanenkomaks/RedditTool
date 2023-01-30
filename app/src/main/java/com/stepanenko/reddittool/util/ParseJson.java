@@ -15,7 +15,7 @@ import java.util.List;
 
 public class ParseJson {
     public static List<RedditPost> parseJson(JSONObject response) throws JSONException{
-        if (response != null && !response.equals("")) {
+        if (response != null) {
             List<RedditPost> posts = new ArrayList<>();
 
             //Go to JSONObject with required data
@@ -28,6 +28,7 @@ public class ParseJson {
                 JSONObject childrenDataJSON = new JSONObject(childrenData);
 
                 //Get data from JSONObject
+                String name = childrenDataJSON.getString("name");
                 String username = childrenDataJSON.getString("subreddit");
                 String thumbnailUrl =  childrenDataJSON.getString("thumbnail");
                 Long createdAt = childrenDataJSON.getLong("created");
@@ -36,6 +37,7 @@ public class ParseJson {
 
                 //Set data to our model
                 RedditPost redditPost = new RedditPost();
+                redditPost.setName(name);
                 redditPost.setAuthor(username);
                 redditPost.setThumbnail(thumbnailUrl);
                 redditPost.setTitle(title);

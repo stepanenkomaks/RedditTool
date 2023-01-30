@@ -38,6 +38,8 @@ public class MainActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
 
+    private String afterParameter = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,13 +54,14 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
 
-        this.getData();
+        this.getData(afterParameter);
 
         nestedScrollView.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener)
                 (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
                     if (scrollY == v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight()) {
+                        afterParameter = posts.get(posts.size() - 1).getName();
                         loadingIndicator.setVisibility(View.VISIBLE);
-                        getData();
+                        getData(afterParameter);
                     }
                 });
     }
@@ -67,9 +70,9 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(this, "Error( Try again!", Toast.LENGTH_LONG).show();
     }
 
-    private void getData() {
+    private void getData(String after) {
         loadingIndicator.setVisibility(View.VISIBLE);
-        Call call = getResponse(DEFAULT_LIMIT);
+        Call call = getResponse(DEFAULT_LIMIT, after);
         call.enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {

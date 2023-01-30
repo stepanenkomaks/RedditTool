@@ -1,6 +1,9 @@
 package com.stepanenko.reddittool.models;
 
 public class RedditPost {
+
+    private String name;
+
     private String author;
 
     private String thumbnail;
@@ -10,6 +13,14 @@ public class RedditPost {
     private String title;
 
     private int comments;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public String getAuthor() {
         return author;
