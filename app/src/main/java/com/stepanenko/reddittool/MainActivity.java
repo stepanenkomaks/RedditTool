@@ -40,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
 
     private String afterParameter = "";
 
+    private String beforeParameter = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,14 +56,20 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
 
-        this.getData(afterParameter);
+        this.getData(afterParameter, beforeParameter);
 
         nestedScrollView.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener)
                 (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
                     if (scrollY == v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight()) {
                         afterParameter = posts.get(posts.size() - 1).getName();
+                        beforeParameter = "";
                         loadingIndicator.setVisibility(View.VISIBLE);
-                        getData(afterParameter);
+                        getData(afterParameter, beforeParameter);
+                    } else if (scrollY == 0) {
+                        afterParameter = "";
+                        beforeParameter = posts.get(0).getName();
+                        loadingIndicator.setVisibility(View.VISIBLE);
+                        getData(afterParameter, beforeParameter);
                     }
                 });
     }
@@ -70,9 +78,13 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(this, "Error( Try again!", Toast.LENGTH_LONG).show();
     }
 
-    private void getData(String after) {
+    private void showRequestErrorToast() {
+        Toast.makeText(this, "This is the top! You can't move higher", Toast.LENGTH_LONG).show();
+    }
+
+    private void getData(String after, String before) {
         loadingIndicator.setVisibility(View.VISIBLE);
-        Call call = getResponse(DEFAULT_LIMIT, after);
+        Call call = getResponse(DEFAULT_LIMIT, after, before);
         call.enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
@@ -81,15 +93,24 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) {
+
                 if (response.isSuccessful() && response.body() != null) {
                     runOnUiThread(() -> {
                         try {
-                            JSONObject jsonObject = new JSONObject(response.body().string());
-                            posts = parseJson(jsonObject);
-                            MainAdapter adapter = new MainAdapter(posts, MainActivity.this);
-                            recyclerView.setAdapter(adapter);
-                        } catch (JSONException | IOException e) {
+                            JSONObject jsonResponse = new JSONObject(response.body().string());
+                            int childrenSize = jsonResponse.getJSONObject("data")
+                                    .optJSONArray("children").length();
+
+                            if (childrenSize != 0) {
+                                posts = parseJson(jsonResponse);
+                                MainAdapter adapter = new MainAdapter(posts, MainActivity.this);
+                                recyclerView.setAdapter(adapter);
+                            } else
+                                throw new IOException();
+                        } catch (JSONException e) {
                             e.printStackTrace();
+                        } catch (IOException e) {
+                            runOnUiThread(() -> showRequestErrorToast());
                         }
                     });
                 } else {
