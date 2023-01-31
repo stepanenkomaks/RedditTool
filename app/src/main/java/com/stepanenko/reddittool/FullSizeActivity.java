@@ -51,7 +51,7 @@ public class FullSizeActivity extends AppCompatActivity {
 
             downloadManager.enqueue(request);
 
-            Toast.makeText(this, "Image download fail", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Image downloaded successfully", Toast.LENGTH_LONG).show();
         } catch (Exception e){
             Toast.makeText(this, "Image download fail", Toast.LENGTH_LONG).show();
         }
