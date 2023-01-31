@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.stepanenko.reddittool.models.RedditPost;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -98,11 +99,11 @@ public class MainActivity extends AppCompatActivity {
                     runOnUiThread(() -> {
                         try {
                             JSONObject jsonResponse = new JSONObject(response.body().string());
-                            int childrenSize = jsonResponse.getJSONObject("data")
-                                    .optJSONArray("children").length();
+                            JSONArray children = jsonResponse.getJSONObject("data")
+                                    .optJSONArray("children");
 
-                            if (childrenSize != 0) {
-                                posts = parseJson(jsonResponse);
+                            if (children.length() != 0) {
+                                posts = parseJson(children);
                                 MainAdapter adapter = new MainAdapter(posts, MainActivity.this);
                                 recyclerView.setAdapter(adapter);
                             } else

@@ -14,13 +14,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ParseJson {
-    public static List<RedditPost> parseJson(JSONObject response) throws JSONException{
-        if (response != null) {
+    public static List<RedditPost> parseJson(JSONArray childrenDataArr) throws JSONException{
+        if (childrenDataArr != null) {
             List<RedditPost> posts = new ArrayList<>();
-
-            //Go to JSONObject with required data
-            JSONArray childrenDataArr = response.getJSONObject("data")
-                    .optJSONArray("children");
 
             for (int i = 0; i < childrenDataArr.length(); i++) {
                 String childrenData = childrenDataArr.getJSONObject(i)
